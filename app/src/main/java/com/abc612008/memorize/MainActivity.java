@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,9 +33,21 @@ public class MainActivity extends AppCompatActivity {
         FragmentQuestionChoose fr = new FragmentQuestionChoose();
         Bundle args=new Bundle();
         args.putString("Question","test");
-        args.putStringArray("Options",new String[]{"1","2","3"});
-        args.putString("Answer","1");
+        args.putStringArray("Options",new String[]{"1","2","3","4","5"});
+        args.putInt("Answer",1);
         fr.setArguments(args);
+        fr.setCallbacks(new Callback() {
+            @Override
+            public void execute() {
+                //correct
+                Log.d("choose","correct!");
+            }}, new Callback() {
+            @Override
+            public void execute() {
+                //incorrect
+                Log.d("choose","incorrect!");
+            }
+        });
         fragment.beginTransaction().replace(R.id.main_container, fr).commit();
     }
 
