@@ -2,7 +2,6 @@ package com.abc612008.memorize;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ public class FragmentQuestionChoose extends Fragment {
         final int answerId=getArguments().getInt("Answer");
         ((TextView) view.findViewById(R.id.question)).setText(question);
         ListView optionsListView=((ListView) view.findViewById(R.id.options));
+        assert options != null;
         optionsListView.setAdapter(
                 new ArrayAdapter<>(getActivity(), R.layout.option_item, options));
         optionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
