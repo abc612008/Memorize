@@ -1,9 +1,11 @@
 package com.abc612008.memorize;
 
+import java.io.Serializable;
+
 /**
  * Created by Null on 2016-08-20.
  */
-public class Word {
+public class Word implements Serializable {
     public final String word, phonetic, definition_en, definition_cn;
     public double[] rememberProgresses;
 

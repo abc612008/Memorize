@@ -1,2 +1,2 @@
 # Memrize
-An Android App to help you memrize words.
+An Android App to help you memorize words.

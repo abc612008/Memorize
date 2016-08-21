@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             while((object=in.readObject()) != null){
                 Data.words.add((Word)object);
             }
+            in.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 out.writeObject(word);
             }
             out.writeObject(null);
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
     private void nextQuestion(){
         ((TextView)findViewById(R.id.txt_Score)).setText("Score: "+ String.valueOf(score));
 
-        if(Data.words.size()==0){
-            makeToast("No words available.");
+        if(Data.words.size()<2){
+            makeToast("No enough words available.");
             return;
         }
 
