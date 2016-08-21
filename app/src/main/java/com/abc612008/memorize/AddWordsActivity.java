@@ -59,10 +59,11 @@ public class AddWordsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
+                                // FIXME: 2016-08-20
                                 Data.words.add(new Word(
                                         response.getString("word_name"),
-                                        response.getJSONObject("symbols").getString("ph_am"),
-                                        response.getJSONObject("symbols").getJSONObject("parts").getJSONArray("means").join(";"),
+                                        response.getJSONArray("symbols").getJSONObject(0).getString("ph_am"),
+                                        response.getJSONArray("symbols").getJSONObject(0).getJSONArray("parts").getJSONObject(0).getJSONArray("means").join(";").replace("\"", ""),
                                         "Not implement"
                                 ));
                             } catch (JSONException e) {
