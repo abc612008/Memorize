@@ -1,10 +1,10 @@
 package com.abc612008.memorize;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Null on 2016-08-20.
  */
 public class Data {
-    public static ArrayList<String> words = new ArrayList<>();
+    public static Vector<Word> words = new Vector<>();
 }
