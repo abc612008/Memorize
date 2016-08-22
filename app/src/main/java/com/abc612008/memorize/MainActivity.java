@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
             while((object=in.readObject()) != null){
                 Data.words.add((Word)object);
             }
+            while((object=in.readObject()) != null){
+                Data.wordQueue.add((String)object);
+            }
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             ObjectOutputStream out = new ObjectOutputStream(openFileOutput("words.dat", Context.MODE_PRIVATE));
             for (Word word : Data.words) {
+                out.writeObject(word);
+            }
+            out.writeObject(null);
+            for (String word : Data.wordQueue) {
                 out.writeObject(word);
             }
             out.writeObject(null);
@@ -166,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.action_word_list) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, WordList.class);
+            intent.setClass(MainActivity.this, WordListActivity.class);
             startActivity(intent);
             return true;
         }

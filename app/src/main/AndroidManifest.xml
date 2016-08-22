@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddWordsActivity" android:label="@string/add_words" />
-        <activity android:name=".WordList" android:label="@string/word_list"/>
+        <activity android:name=".WordListActivity" android:label="@string/word_list"/>
         <activity android:name=".SettingsActivity" android:label="@string/action_settings"/>
     </application>
 

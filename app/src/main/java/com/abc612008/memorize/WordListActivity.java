@@ -5,18 +5,21 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class WordList extends AppCompatActivity {
+public class WordListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListView lv= new ListView(this);
+        setContentView(R.layout.activity_word_list);
+
         String[] words=new String[Data.words.size()];
         for (int i = 0; i < Data.words.size(); i++) {
             words[i]=Data.words.get(i).word;
         }
-        lv.setAdapter(new ArrayAdapter<>(this,
+        ((ListView)findViewById(R.id.word_list)).setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, words));
-        setContentView(lv);
+
+        ((ListView)findViewById(R.id.queue_list)).setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, Data.wordQueue.toArray()));
     }
 }

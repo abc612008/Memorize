@@ -25,8 +25,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
+        android:text="@string/add"
         android:id="@+id/btn_submit"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignRight="@+id/edt_words"
+        android:layout_alignEnd="@+id/edt_words" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queue_add"
+        android:id="@+id/btn_queue"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

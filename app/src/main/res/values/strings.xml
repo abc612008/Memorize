@@ -5,4 +5,7 @@
     <string name="word_list">Word List</string>
     <string name="score">Score: %1$d</string>
     <string name="add_words">Add Words</string>
+    <string name="add">Add</string>
+    <string name="queue_add">Queue Add</string>
+    <string name="add_queue">Add Queue</string>
 </resources>
