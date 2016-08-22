@@ -24,10 +24,6 @@ public class AddWordsActivity extends AppCompatActivity {
 
     RequestQueue requestQueue;
 
-    private void makeToast(String msg){
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }
-
     private void getWordData(String word, Response.Listener<JSONObject> callback){
         requestQueue.add(new JsonObjectRequest(
                 Request.Method.GET,
@@ -38,7 +34,8 @@ public class AddWordsActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.w("getWordData","Failed to get the word because "+error.toString());
-                        makeToast("Failed to add words. Please check your network connection.");
+                        Util.makeToast(AddWordsActivity.this,"Failed to add words. Please check your network connection.");
+                        //TODO: add it to list and add it later.
                     }
                 }
         ));
@@ -67,7 +64,7 @@ public class AddWordsActivity extends AppCompatActivity {
                                         "Not implement"
                                 ));
                             } catch (JSONException e) {
-                                makeToast("Word " + word + " cannot be found or unknown error");
+                                Util.makeToast(AddWordsActivity.this, "Word " + word + " cannot be found or unknown error");
                                 e.printStackTrace();
                             }
                         }

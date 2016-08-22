@@ -1,6 +1,5 @@
 package com.abc612008.memorize;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,25 +7,18 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private int score;
-
-    private void makeToast(String msg){
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }
 
     private void load(){
         score=getSharedPreferences("Data", MODE_PRIVATE).getInt("score",0);
@@ -66,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         int wordNumber=Data.words.size();
 
         //选定一个word作为题目
-        Word correctWord=Data.words.get(randomLessThan(wordNumber));
+        int id=randomLessThan(wordNumber);
+        Word correctWord=Data.words.get(id);
 
         //随机生成选项个数和不重复的选项
         int optionNumber=(int)Math.ceil(3*Math.random())+2;
@@ -91,30 +84,33 @@ public class MainActivity extends AppCompatActivity {
         args.putString("Question",correctWord.definition_cn);
         args.putStringArray("Options",ops);
         args.putInt("Answer",correctId);
+        args.putInt("WordID",id);
         return args;
     }
 
     private void nextQuestion(){
-        ((TextView)findViewById(R.id.txt_Score)).setText("Score: "+ String.valueOf(score));
+        ((TextView)findViewById(R.id.txt_Score)).setText(String.format(getResources().getString(R.string.score), score));
 
         if(Data.words.size()<2){
-            makeToast("No enough words available.");
+            Util.makeToast(this, "Not enough words to memorize.");
             return;
         }
 
         FragmentQuestionChoose fr = new FragmentQuestionChoose();
         fr.setArguments(getQuestion());
-        fr.setCallbacks(new Callback() {
+        fr.setCallbacks(new QuestionCallback() {
             @Override
-            public void execute() {
+            public void execute(int position, int type) {
                 //correct
                 score+=10; //TODO: change score according rules
+                Data.words.get(position).rememberProgresses[type]*=1.2;
                 nextQuestion();
-            }}, new Callback() {
+            }}, new QuestionCallback() {
             @Override
-            public void execute() {
+            public void execute(int position, int type) {
                 //incorrect
                 score-=10; //TODO: change score according rules
+                Data.words.get(position).rememberProgresses[type]*=0.8;
                 nextQuestion();
             }
         });
@@ -162,6 +158,15 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.action_word_list) {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, WordList.class);
+            startActivity(intent);
             return true;
         }
 

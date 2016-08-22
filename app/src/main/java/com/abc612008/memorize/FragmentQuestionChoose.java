@@ -15,7 +15,9 @@ import android.widget.TextView;
  */
 public class FragmentQuestionChoose extends Fragment {
 
-    private Callback onCorrect, onIncorrect;
+    private QuestionCallback onCorrect, onIncorrect;
+
+    private static final int QuestionType = 0;
 
     public FragmentQuestionChoose() {
     }
@@ -25,8 +27,9 @@ public class FragmentQuestionChoose extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question_choose, container, false);
         String question = getArguments().getString("Question");
-        String[] options = getArguments().getStringArray("Options");
+        final String[] options = getArguments().getStringArray("Options");
         final int answerId=getArguments().getInt("Answer");
+        final int wordID=getArguments().getInt("WordID");
         ((TextView) view.findViewById(R.id.question)).setText(question);
         ListView optionsListView=((ListView) view.findViewById(R.id.options));
         assert options != null;
@@ -35,14 +38,16 @@ public class FragmentQuestionChoose extends Fragment {
         optionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                if(position==answerId)
-                    onCorrect.execute();
-                else
-                    onIncorrect.execute();
+                if(position==answerId) {
+                    onCorrect.execute(wordID, QuestionType);
+                } else {
+                    Util.makeToast(getActivity(), "错误，正确答案为:"+options[answerId]);
+                    onIncorrect.execute(wordID, QuestionType);
+                }
             }});
         return view;
     }
-    public void setCallbacks(Callback onCorrect,Callback onIncorrect) {
+    public void setCallbacks(QuestionCallback onCorrect, QuestionCallback onIncorrect) {
         this.onCorrect=onCorrect;
         this.onIncorrect=onIncorrect;
     }
