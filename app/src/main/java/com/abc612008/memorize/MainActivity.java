@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private int score;
 
     private void load(){
+        if(Data.words.size()!=0) return;
         score=getSharedPreferences("Data", MODE_PRIVATE).getInt("score",0);
         try {
             ObjectInputStream in = new ObjectInputStream(openFileInput("words.dat"));
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         //随机生成选项个数和不重复的选项
         int optionNumber=(int)Math.ceil(3*Math.random())+2;
-        if(optionNumber>wordNumber) optionNumber=wordNumber;
+        if(optionNumber>wordNumber) optionNumber=wordNumber-1;
 
         HashSet<String> opsSet=new HashSet<>();
         while(opsSet.size()<optionNumber) {
@@ -91,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     private void nextQuestion(){
         ((TextView)findViewById(R.id.txt_Score)).setText(String.format(getResources().getString(R.string.score), score));
 
-        if(Data.words.size()<2){
-            Util.makeToast(this, "Not enough words to memorize.");
+        if(Data.words.size()<3){
+            Util.makeToast(this, "Not enough words to memorize. At least 3 words should be added.");
             return;
         }
 

@@ -20,9 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddWordsActivity" />
-        <activity android:name=".WordList" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".AddWordsActivity" android:label="@string/add_words" />
+        <activity android:name=".WordList" android:label="@string/word_list"/>
+        <activity android:name=".SettingsActivity" android:label="@string/action_settings"/>
     </application>
 
 </manifest>
