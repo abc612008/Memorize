@@ -12,6 +12,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 public class WordListActivity extends AppCompatActivity {
@@ -21,7 +26,16 @@ public class WordListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_list);
 
-        ((ListView)findViewById(R.id.word_list)).setAdapter(new WordListAdapter(this, Data.words));
+        Vector<Word> sortedWords = new Vector<>(Data.words);
+        Collections.sort(sortedWords,new Comparator<Word>(){
+            public int compare(Word arg1, Word arg2) {
+                double progress1=0,progress2=0;
+                for (double progress : arg1.rememberProgresses) progress1+=progress;
+                for (double progress : arg2.rememberProgresses) progress2+=progress;
+                return Double.compare(progress1, progress2);
+            }
+        });
+        ((ListView)findViewById(R.id.word_list)).setAdapter(new WordListAdapter(this, sortedWords));
 
         ((ListView)findViewById(R.id.queue_list)).setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, Data.wordQueue.toArray()));
@@ -83,7 +97,7 @@ public class WordListActivity extends AppCompatActivity {
             holder.phonetic.setText(getData().get(position).phonetic);
             holder.definition_cn.setText(getData().get(position).definition_cn);
             holder.definition_en.setText(getData().get(position).definition_en);
-            double[] progresses= getData().get(position).rememberProgresses;
+            double[] progresses = getData().get(position).rememberProgresses;
             double prog=0;
             for (double progress : progresses) {
                 prog+=progress;
