@@ -15,5 +15,8 @@ public class Word implements Serializable {
         definition_cn=_definition_cn;
         definition_en=_definition_en;
         rememberProgresses=new double[2];
+        for (int i = 0; i < rememberProgresses.length; i++) {
+            rememberProgresses[i]=0.1;
+        }
     }
 }

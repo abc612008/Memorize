@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         //随机生成选项个数和不重复的选项
         int optionNumber=(int)Math.ceil(3*Math.random())+2;
-        if(optionNumber>wordNumber) optionNumber=wordNumber-1;
+        if(optionNumber>wordNumber-1) optionNumber=wordNumber-1;
 
         HashSet<String> opsSet=new HashSet<>();
         while(opsSet.size()<optionNumber) {
