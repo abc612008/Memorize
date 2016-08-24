@@ -68,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
         int wordNumber=Data.words.size();
 
         //选定一个word作为题目
-        int id;
-        for(id=0;id!=Data.words.size();id++){
+        int id, num=0;
+        while(true){
+            num++;
+            id=randomLessThan(Data.words.size());
             if(Math.random()*100<100-Data.words.get(id).getAvgProgress()) break;
+            if(num>Data.words.size()*2) break;
         }
         Word correctWord=Data.words.get(id);
 
