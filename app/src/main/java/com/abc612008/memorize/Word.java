@@ -14,9 +14,15 @@ public class Word implements Serializable {
         phonetic=_phonetic;
         definition_cn=_definition_cn;
         definition_en=_definition_en;
-        rememberProgresses=new double[2];
-        for (int i = 0; i < rememberProgresses.length; i++) {
-            rememberProgresses[i]=0.1;
+        rememberProgresses=new double[Data.QuestionType.Max.ordinal()-1];
+    }
+
+    // The return value is between 0 to 100
+    public int getAvgProgress(){
+        double progressSum=0;
+        for (double progress : rememberProgresses) {
+            progressSum+=progress;
         }
+        return (int)(progressSum/rememberProgresses.length*100);
     }
 }

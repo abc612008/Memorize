@@ -3,6 +3,8 @@ package com.abc612008.memorize;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -66,33 +68,105 @@ public class MainActivity extends AppCompatActivity {
         int wordNumber=Data.words.size();
 
         //选定一个word作为题目
-        int id=randomLessThan(wordNumber);
+        int id;
+        for(id=0;id!=Data.words.size();id++){
+            if(Math.random()*100<100-Data.words.get(id).getAvgProgress()) break;
+        }
         Word correctWord=Data.words.get(id);
 
-        //随机生成选项个数和不重复的选项
-        int optionNumber=(int)Math.ceil(3*Math.random())+2;
-        if(optionNumber>wordNumber-1) optionNumber=wordNumber-1;
-
-        HashSet<String> opsSet=new HashSet<>();
-        while(opsSet.size()<optionNumber) {
-            String wordNow=Data.words.get(randomLessThan(wordNumber)).word;
-            if(wordNow.equals(correctWord.word)) continue;
-            opsSet.add(wordNow);
+        //选定一个题目类型,type越大,progresses[type]越大，被选中的概率越小
+        int type;
+        for(type=0;type!= Data.QuestionType.Max.ordinal()-1;type++){
+            if(Math.random()<1-correctWord.rememberProgresses[type]) break;
         }
 
-        String[] ops=new String[opsSet.size()];
-        opsSet.toArray(ops);
+        Bundle args = new Bundle();
+        switch(Data.QuestionType.values()[type]) {
+            case Definition: {
+                boolean w2d = Math.random() < 0.5; // word to definition
+                //随机生成选项个数和不重复的选项
+                int optionNumber = (int) Math.ceil(3 * Math.random()) + 2;
+                if (optionNumber > wordNumber - 1) optionNumber = wordNumber - 1;
 
-        //随机选定一个位置放置正确答案
-        int correctId=randomLessThan(optionNumber);
-        ops[correctId]=correctWord.word;
+                HashSet<String> opsSet = new HashSet<>();
+                if (w2d) {
+                    while (opsSet.size() < optionNumber) {
+                        String defNow = Data.words.get(randomLessThan(wordNumber)).definition_cn;
+                        if (defNow.equals(correctWord.definition_cn)) continue;
+                        opsSet.add(defNow);
+                    }
+                } else {
+                    while (opsSet.size() < optionNumber) {
+                        String wordNow = Data.words.get(randomLessThan(wordNumber)).word;
+                        if (wordNow.equals(correctWord.word)) continue;
+                        opsSet.add(wordNow);
+                    }
+                }
 
-        //填充参数
-        Bundle args=new Bundle();
-        args.putString("Question",correctWord.definition_cn);
-        args.putStringArray("Options",ops);
-        args.putInt("Answer",correctId);
-        args.putInt("WordID",id);
+                String[] ops = new String[opsSet.size()];
+                opsSet.toArray(ops);
+
+                //随机选定一个位置放置正确答案
+                int correctId = randomLessThan(optionNumber);
+                if (w2d)
+                    ops[correctId] = correctWord.definition_cn;
+                else
+                    ops[correctId] = correctWord.word;
+
+                //填充参数
+                if (w2d)
+                    args.putString("Question", correctWord.word);
+                else
+                    args.putString("Question", correctWord.definition_cn);
+                args.putStringArray("Options", ops);
+                args.putInt("Answer", correctId);
+                args.putInt("WordID", id);
+                args.putString("PlaySound", correctWord.word);
+                args.putBoolean("BeforePlay", w2d);
+                break;
+            }
+            case Audio:
+            case Spell:{
+                boolean a2d = Math.random() < 0.5; // audio to definition
+                //随机生成选项个数和不重复的选项
+                int optionNumber = (int) Math.ceil(3 * Math.random()) + 2;
+                if (optionNumber > wordNumber - 1) optionNumber = wordNumber - 1;
+
+                HashSet<String> opsSet = new HashSet<>();
+                if (a2d) {
+                    while (opsSet.size() < optionNumber) {
+                        String defNow = Data.words.get(randomLessThan(wordNumber)).definition_cn;
+                        if (defNow.equals(correctWord.definition_cn)) continue;
+                        opsSet.add(defNow);
+                    }
+                } else {
+                    while (opsSet.size() < optionNumber) {
+                        String wordNow = Data.words.get(randomLessThan(wordNumber)).word;
+                        if (wordNow.equals(correctWord.word)) continue;
+                        opsSet.add(wordNow);
+                    }
+                }
+
+                String[] ops = new String[opsSet.size()];
+                opsSet.toArray(ops);
+
+                //随机选定一个位置放置正确答案
+                int correctId = randomLessThan(optionNumber);
+                if (a2d)
+                    ops[correctId] = correctWord.definition_cn;
+                else
+                    ops[correctId] = correctWord.word;
+
+                //填充参数
+                args.putString("Question", "(Audio)");
+                args.putStringArray("Options", ops);
+                args.putInt("Answer", correctId);
+                args.putInt("WordID", id);
+                args.putString("PlaySound", correctWord.word);
+                args.putBoolean("BeforePlay", true);
+                break;
+            }
+        }
         return args;
     }
 
@@ -110,14 +184,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void execute(int position, int type) {
                 //correct
-                score+=10; //TODO: change score according rules
+                score+=50;
+                if(Data.words.get(position).rememberProgresses[type]==0) Data.words.get(position).rememberProgresses[type]=0.1;
                 Data.words.get(position).rememberProgresses[type]*=1.2;
+                if(Data.words.get(position).rememberProgresses[type]>1) Data.words.get(position).rememberProgresses[type]=1;
                 nextQuestion();
             }}, new QuestionCallback() {
             @Override
             public void execute(int position, int type) {
                 //incorrect
-                score-=10; //TODO: change score according rules
+                score-=80;
                 Data.words.get(position).rememberProgresses[type]*=0.8;
                 nextQuestion();
             }
@@ -125,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
 
         getFragmentManager().beginTransaction().replace(R.id.main_container, fr).commit();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        WordSoundPool.init();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -8,4 +8,5 @@ import java.util.Vector;
 public class Data {
     public static Vector<Word> words = new Vector<>();
     public static Vector<String> wordQueue = new Vector<>();
+    enum QuestionType { Definition, Audio, Spell, Max };
 }

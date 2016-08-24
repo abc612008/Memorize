@@ -97,14 +97,7 @@ public class WordListActivity extends AppCompatActivity {
             holder.phonetic.setText(getData().get(position).phonetic);
             holder.definition_cn.setText(getData().get(position).definition_cn);
             holder.definition_en.setText(getData().get(position).definition_en);
-            double[] progresses = getData().get(position).rememberProgresses;
-            double prog=0;
-            for (double progress : progresses) {
-                prog+=progress;
-            }
-            prog/=progresses.length;
-            prog*=100;
-            holder.progress.setProgress((int)prog);
+            holder.progress.setProgress(getData().get(position).getAvgProgress());
             return convertView;
         }
     }

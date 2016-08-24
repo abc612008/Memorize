@@ -2,6 +2,7 @@ package com.abc612008.memorize;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,6 @@ public class FragmentQuestionChoose extends Fragment {
 
     private QuestionCallback onCorrect, onIncorrect;
 
-    private static final int QuestionType = 0;
-
     public FragmentQuestionChoose() {
     }
 
@@ -30,6 +29,10 @@ public class FragmentQuestionChoose extends Fragment {
         final String[] options = getArguments().getStringArray("Options");
         final int answerId=getArguments().getInt("Answer");
         final int wordID=getArguments().getInt("WordID");
+        final int questionType=getArguments().getInt("QuestionType");
+        final String sound=getArguments().getString("PlaySound");
+        if(sound!=null&&!sound.isEmpty()&&getArguments().getBoolean("BeforePlay"))
+            WordSoundPool.play(sound);
         ((TextView) view.findViewById(R.id.question)).setText(question);
         ListView optionsListView=((ListView) view.findViewById(R.id.options));
         assert options != null;
@@ -38,11 +41,13 @@ public class FragmentQuestionChoose extends Fragment {
         optionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                if(sound!=null&&!sound.isEmpty()&&!getArguments().getBoolean("BeforePlay"))
+                    WordSoundPool.play(sound);
                 if(position==answerId) {
-                    onCorrect.execute(wordID, QuestionType);
+                    onCorrect.execute(wordID, questionType);
                 } else {
                     Util.makeToast(getActivity(), "错误，正确答案为:"+options[answerId]);
-                    onIncorrect.execute(wordID, QuestionType);
+                    onIncorrect.execute(wordID, questionType);
                 }
             }});
         return view;
