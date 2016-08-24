@@ -11,12 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class FragmentQuestionChoose extends Fragment {
-
-    private QuestionCallback onCorrect, onIncorrect;
+public class FragmentQuestionChoose extends FragmentQuestion {
 
     public FragmentQuestionChoose() {
     }
@@ -52,8 +47,5 @@ public class FragmentQuestionChoose extends Fragment {
             }});
         return view;
     }
-    public void setCallbacks(QuestionCallback onCorrect, QuestionCallback onIncorrect) {
-        this.onCorrect=onCorrect;
-        this.onIncorrect=onIncorrect;
-    }
+
 }

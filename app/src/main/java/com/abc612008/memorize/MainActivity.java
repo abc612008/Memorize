@@ -122,14 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 else
                     args.putString("Question", correctWord.definition_cn);
                 args.putStringArray("Options", ops);
-                args.putInt("Answer", correctId);
+                args.putInt("AnswerWord", correctId);
                 args.putInt("WordID", id);
                 args.putString("PlaySound", correctWord.word);
                 args.putBoolean("BeforePlay", w2d);
+                args.putInt("QuestionType", 0);
                 break;
             }
             case Audio:
-            case Spell:{
+            {
                 boolean a2d = Math.random() < 0.5; // audio to definition
                 //随机生成选项个数和不重复的选项
                 int optionNumber = (int) Math.ceil(3 * Math.random()) + 2;
@@ -167,6 +168,18 @@ public class MainActivity extends AppCompatActivity {
                 args.putInt("WordID", id);
                 args.putString("PlaySound", correctWord.word);
                 args.putBoolean("BeforePlay", true);
+                args.putInt("QuestionType", 1);
+                break;
+            }
+            case Spell:
+            {
+                boolean definition=Math.random()<0.5; // definition or audio
+                //填充参数
+                args.putString("Question", definition?correctWord.definition_cn:"(Audio)");
+                args.putString("AnswerWord", correctWord.word);
+                args.putInt("WordID", id);
+                args.putBoolean("BeforePlay", !definition);
+                args.putInt("QuestionType", 2);
                 break;
             }
         }
@@ -181,8 +194,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        FragmentQuestionChoose fr = new FragmentQuestionChoose();
-        fr.setArguments(getQuestion());
+        Bundle args=getQuestion();
+
+        FragmentQuestion fr;
+        if(args.getInt("QuestionType")==2) fr=new FragmentQuestionSpell();
+        else fr=new FragmentQuestionChoose();
+
+        fr.setArguments(args);
         fr.setCallbacks(new QuestionCallback() {
             @Override
             public void execute(int position, int type) {
