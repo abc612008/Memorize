@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         //选定一个题目类型,type越大,progresses[type]越大，被选中的概率越小
         int type=-1;
+        while(type==-1||(type==Data.QuestionType.Audio.ordinal()&&(WordSoundPool.mute||WordSoundPool.first))) {
             for (type = 0; type != Data.QuestionType.Max.ordinal() - 1; type++) {
                 if (Math.random() < 1 - correctWord.rememberProgresses[type]) break;
             }
