@@ -1,8 +1,6 @@
 package com.abc612008.memorize;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +33,13 @@ public class FragmentQuestionChoose extends FragmentQuestion {
                 new ArrayAdapter<>(getActivity(), R.layout.option_item, options));
         optionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id){
                 if(sound!=null&&!sound.isEmpty()&&!getArguments().getBoolean("BeforePlay"))
                     WordSoundPool.play(sound);
                 if(position==answerId) {
                     onCorrect.execute(wordID, questionType);
                 } else {
-                    Util.makeToast(getActivity(), "错误，正确答案为:"+options[answerId]);
+                    Util.makeToast(getActivity(), "Incorrect. Answer:"+options[answerId]);
                     onIncorrect.execute(wordID, questionType);
                 }
             }});

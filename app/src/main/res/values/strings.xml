@@ -12,4 +12,7 @@
     <string name="mute">Mute</string>
     <string name="export">Export</string>
     <string name="import_data">Import</string>
+    <string name="add_and_clear"><![CDATA[Add & Clear]]></string>
+    <string name="clear">Clear</string>
+    <string name="search_words">Search words</string>
 </resources>
