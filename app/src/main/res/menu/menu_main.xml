@@ -8,6 +8,21 @@
         android:title="@string/word_list"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_mute"
+        android:orderInCategory="100"
+        android:title="@string/mute"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_export"
+        android:orderInCategory="100"
+        android:title="@string/export"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_import"
+        android:orderInCategory="100"
+        android:title="@string/import_data"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

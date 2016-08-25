@@ -12,12 +12,16 @@ import java.util.HashMap;
 public class WordSoundPool {
     private static SoundPool soundPool;
     private static HashMap<String, Integer> sounds = new HashMap<String, Integer>();
+    public static boolean mute=false;
+    public static boolean first=true;
 
     public static void init(){
         soundPool=new SoundPool(3, AudioManager.STREAM_MUSIC ,0);
     }
 
     public static void play(String word){
+        if(first) {first=false;return;}
+        if(mute) return;
         if(sounds.containsKey(word)){
             soundPool.play(sounds.get(word), 1, 1, 0, 0, 1);
         }else{

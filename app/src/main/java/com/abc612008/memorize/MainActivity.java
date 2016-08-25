@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,11 +26,15 @@ import java.util.HashSet;
 public class MainActivity extends AppCompatActivity {
     private int score;
 
-    private void load(){
+    private void load(boolean isExport){
         if(Data.words.size()!=0) return;
         score=getSharedPreferences("Data", MODE_PRIVATE).getInt("score",0);
         try {
-            ObjectInputStream in = new ObjectInputStream(openFileInput("words.dat"));
+            ObjectInputStream in;
+            if(isExport)
+                in = new ObjectInputStream(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/memorize/exported_word.dat")));
+            else
+                in= new ObjectInputStream(openFileInput("words.dat"));
             Object object;
             while((object=in.readObject()) != null){
                 Data.words.add((Word)object);
@@ -35,17 +43,22 @@ public class MainActivity extends AppCompatActivity {
                 Data.wordQueue.add((String)object);
             }
             in.close();
+            if(isExport) Util.makeToast(this, "Success!");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void save(){
+    private void save(boolean isExport){
         SharedPreferences.Editor editor = getSharedPreferences("Data", MODE_PRIVATE).edit();
         editor.putInt("score", score);
         editor.apply();
         try {
-            ObjectOutputStream out = new ObjectOutputStream(openFileOutput("words.dat", Context.MODE_PRIVATE));
+            ObjectOutputStream out;
+            if(isExport)
+                out = new ObjectOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/memorize/exported_word.dat")));
+            else
+                out = new ObjectOutputStream(openFileOutput("words.dat", Context.MODE_PRIVATE));
             for (Word word : Data.words) {
                 out.writeObject(word);
             }
@@ -55,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             }
             out.writeObject(null);
             out.close();
+            if(isExport) Util.makeToast(this, "Success!");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,9 +92,10 @@ public class MainActivity extends AppCompatActivity {
         Word correctWord=Data.words.get(id);
 
         //选定一个题目类型,type越大,progresses[type]越大，被选中的概率越小
-        int type;
-        for(type=0;type!= Data.QuestionType.Max.ordinal()-1;type++){
-            if(Math.random()<1-correctWord.rememberProgresses[type]) break;
+        int type=-1;
+            for (type = 0; type != Data.QuestionType.Max.ordinal() - 1; type++) {
+                if (Math.random() < 1 - correctWord.rememberProgresses[type]) break;
+            }
         }
 
         Bundle args = new Bundle();
@@ -122,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     args.putString("Question", correctWord.definition_cn);
                 args.putStringArray("Options", ops);
-                args.putInt("AnswerWord", correctId);
+                args.putInt("Answer", correctId);
                 args.putInt("WordID", id);
                 args.putString("PlaySound", correctWord.word);
                 args.putBoolean("BeforePlay", w2d);
@@ -228,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        load();
+        load(false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -275,13 +290,24 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-
+        if (id == R.id.action_mute) {
+            WordSoundPool.mute=!WordSoundPool.mute;
+            return true;
+        }
+        if (id == R.id.action_export) {
+            save(true);
+            return true;
+        }
+        if (id == R.id.action_import) {
+            load(true);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        save();
+        save(false);
     }
 }
