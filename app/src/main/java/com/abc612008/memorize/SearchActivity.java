@@ -27,7 +27,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        gaw= new GetAddWord(this);
+        gaw = new GetAddWord(this);
         ((EditText)findViewById(R.id.edt_word)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

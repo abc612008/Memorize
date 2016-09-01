@@ -34,8 +34,8 @@ public class FragmentQuestionChoose extends FragmentQuestion {
         optionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id){
-                if(sound!=null&&!sound.isEmpty()&&!getArguments().getBoolean("BeforePlay"))
-                    WordSoundPool.play(sound);
+                //if(sound!=null&&!sound.isEmpty()&&!getArguments().getBoolean("BeforePlay"))
+                //    WordSoundPool.play(sound);
                 if(position==answerId) {
                     onCorrect.execute(wordID, questionType);
                 } else {

@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         //选定一个题目类型,type越大,progresses[type]越大，被选中的概率越小
         int type=-1;
         while(type==-1||(type==Data.QuestionType.Audio.ordinal()&&(WordSoundPool.mute||WordSoundPool.first))) {
-            for (type = 0; type != Data.QuestionType.Max.ordinal() - 1; type++) {
+            for (type = 0; type != Data.QuestionType.Max.ordinal(); type++) {
                 if (Math.random() < 1 - correctWord.rememberProgresses[type]) break;
             }
         }
@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             case Spell:
             {
                 boolean definition=Math.random()<0.5; // definition or audio
+                if(!definition&&(WordSoundPool.mute||WordSoundPool.first))definition=true;
                 //填充参数
                 args.putString("Question", definition?correctWord.definition_cn:"(Audio)");
                 args.putString("AnswerWord", correctWord.word);
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 //correct
                 score+=50;
                 if(Data.words.get(position).rememberProgresses[type]==0) Data.words.get(position).rememberProgresses[type]=0.1;
-                Data.words.get(position).rememberProgresses[type]*=1.2;
+                Data.words.get(position).rememberProgresses[type]*=2;
                 if(Data.words.get(position).rememberProgresses[type]>1) Data.words.get(position).rememberProgresses[type]=1;
                 nextQuestion();
             }}, new QuestionCallback() {
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
             public void execute(int position, int type) {
                 //incorrect
                 score-=80;
-                Data.words.get(position).rememberProgresses[type]*=0.8;
+                Data.words.get(position).rememberProgresses[type]*=0.5;
                 nextQuestion();
             }
         });

@@ -48,8 +48,8 @@ public class FragmentQuestionSpell extends FragmentQuestion {
         view.findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!getArguments().getBoolean("BeforePlay"))
-                    WordSoundPool.play(answer);
+                //if(!getArguments().getBoolean("BeforePlay"))
+                //    WordSoundPool.play(answer);
                 if(((EditText) view.findViewById(R.id.answer)).getText().toString().equals(answer)) {
                     onCorrect.execute(wordID, questionType);
                 } else {
